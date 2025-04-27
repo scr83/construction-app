@@ -1,24 +1,5 @@
 'use client';
-import React from 'react';
 import { ChevronLeft, Tag, Plus, Search, Clock, CheckCircle2, Camera, FileText, AlertCircle, Edit, ChevronRight, MoreVertical, Building2, X } from 'lucide-react';
-
-import React from 'react';
-import { 
-  ChevronLeft,
-  Tag,
-  Plus,
-  Search,
-  Clock,
-  CheckCircle2,
-  Camera,
-  FileText,
-  AlertCircle,
-  Edit,
-  ChevronRight,
-  MoreVertical,
-  Building2,
-  X
-} from 'lucide-react';
 
 export default function TasksConfiguration() {
   return (

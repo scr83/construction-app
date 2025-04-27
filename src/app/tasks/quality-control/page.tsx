@@ -1,25 +1,5 @@
 'use client';
-import React from 'react';
 import { ChevronLeft, Building2, Camera, MapPin, Clock, User, CheckCircle2, XCircle, AlertCircle, Image, Plus, WifiOff, ChevronRight, FileText, Save } from 'lucide-react';
-
-import React from 'react';
-import { 
-  ChevronLeft,
-  Building2,
-  Camera,
-  MapPin,
-  Clock,
-  User,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  Image,
-  Plus,
-  WifiOff,
-  ChevronRight,
-  FileText,
-  Save
-} from 'lucide-react';
 
 export default function QualityControlCheck() {
   return (

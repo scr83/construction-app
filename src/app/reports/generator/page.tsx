@@ -1,26 +1,5 @@
 'use client';
-import React from 'react';
 import { ChevronLeft, Calendar, Download, FileText, BarChart3, Image, ChevronRight, Settings, AlertCircle, Save, Eye, CheckCircle2, ArrowRight, Clock, PlusCircle, X } from 'lucide-react';
-
-import React from 'react';
-import { 
-  ChevronLeft,
-  Calendar,
-  Download,
-  FileText,
-  BarChart3,
-  Image,
-  ChevronRight,
-  Settings,
-  AlertCircle,
-  Save,
-  Eye,
-  CheckCircle2,
-  ArrowRight,
-  Clock,
-  PlusCircle,
-  X
-} from 'lucide-react';
 
 export default function ReportGenerator() {
   return (

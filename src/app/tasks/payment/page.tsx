@@ -1,24 +1,5 @@
 'use client';
-import React from 'react';
 import { ChevronLeft, Building2, DollarSign, Receipt, User, Calendar, CheckCircle2, FileText, Upload, Plus, X, AlertCircle, Calculator, Save } from 'lucide-react';
-
-import React from 'react';
-import { 
-  ChevronLeft,
-  Building2,
-  DollarSign,
-  Receipt,
-  User,
-  Calendar,
-  CheckCircle2,
-  FileText,
-  Upload,
-  Plus,
-  X,
-  AlertCircle,
-  Calculator,
-  Save
-} from 'lucide-react';
 
 export default function PaymentRegistration() {
   return (
