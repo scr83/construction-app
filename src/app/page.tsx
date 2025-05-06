@@ -1,5 +1,6 @@
+"use client";
 import Image from 'next/image';
-import { Button, LinkButton } from '@/components/ui/Button';
+import Link from 'next/link';
 
 export default function LandingPage() {
   return (
@@ -18,20 +19,18 @@ export default function LandingPage() {
             <h1 className="text-xl font-bold text-text-primary">ConstructionApp</h1>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <LinkButton 
+            <Link 
               href="/auth/login" 
-              variant="secondary"
-              size="sm"
+              className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
             >
               Iniciar sesión
-            </LinkButton>
-            <LinkButton 
+            </Link>
+            <Link 
               href="/auth/register" 
-              variant="primary"
-              size="sm"
+              className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
             >
               Registrarse
-            </LinkButton>
+            </Link>
           </div>
         </div>
       </header>
@@ -48,20 +47,18 @@ export default function LandingPage() {
               monitoreando avances y optimizando recursos directamente desde tu dispositivo.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                variant="primary"
-                size="lg"
-                onClick={() => window.location.href = '/auth/register'}
+              <Link 
+                href="/auth/register"
+                className="text-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg"
               >
                 Comenzar ahora
-              </Button>
-              <Button 
-                variant="secondary"
-                size="lg"
-                onClick={() => window.location.href = '#features'}
+              </Link>
+              <Link 
+                href="#features"
+                className="text-center w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 font-bold py-3 px-4 rounded-lg"
               >
                 Ver características
-              </Button>
+              </Link>
             </div>
           </div>
           <div className="md:w-1/2">
@@ -157,21 +154,18 @@ export default function LandingPage() {
             el futuro de la gestión de proyectos de construcción.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              variant="secondary"
-              size="lg"
-              onClick={() => window.location.href = '/auth/register'}
+            <Link 
+              href="/auth/register"
+              className="text-center bg-white text-gray-800 hover:bg-gray-100 font-bold py-3 px-4 rounded-lg"
             >
               Solicitar acceso alpha
-            </Button>
-            <Button 
-              variant="primary"
-              size="lg"
-              onClick={() => window.location.href = '/auth/login'}
-              className="bg-white text-primary hover:bg-gray-100"
+            </Link>
+            <Link 
+              href="/auth/login"
+              className="text-center bg-white text-primary hover:bg-gray-100 font-bold py-3 px-4 rounded-lg"
             >
               Iniciar sesión
-            </Button>
+            </Link>
           </div>
         </div>
       </section>
