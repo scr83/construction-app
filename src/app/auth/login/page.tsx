@@ -1,7 +1,69 @@
 'use client';
+import { useState } from 'react';
 import { User, Lock, Building2, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      // Usuarios predefinidos para demo
+      if (email === 'demo@example.com' && password === 'demo123') {
+        // Guardar info de sesión
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userRole', 'gerencia');
+        localStorage.setItem('userName', 'Usuario Demo');
+        
+        // Redirigir al dashboard
+        window.location.href = '/dashboard';
+        return;
+      } 
+      
+      if (email === 'operativo@example.com' && password === 'demo123') {
+        // Guardar info de sesión
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userRole', 'operativo');
+        localStorage.setItem('userName', 'Usuario Operativo');
+        
+        // Redirigir al dashboard
+        window.location.href = '/dashboard';
+        return;
+      }
+      
+      // Verificar si es un usuario registrado
+      const savedEmail = localStorage.getItem('userEmail');
+      const savedPassword = localStorage.getItem('userPassword');
+      const savedName = localStorage.getItem('userName');
+      const savedRole = localStorage.getItem('userRole');
+      
+      if (savedEmail === email && savedPassword === password) {
+        // Usuario registrado
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Redirigir al dashboard
+        window.location.href = '/dashboard';
+        return;
+      }
+      
+      // Si llegamos aquí, las credenciales son incorrectas
+      setError('Credenciales incorrectas. Para la demo, usa: demo@example.com / demo123');
+    } catch (err) {
+      console.error('Error en login:', err);
+      setError('Error al iniciar sesión. Intente de nuevo más tarde.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header/Logo Area - Ocupa 30vh en móvil */}
@@ -16,7 +78,13 @@ export default function LoginScreen() {
       {/* Form Area - Resto del espacio */}
       <div className="flex-1 flex flex-col px-6 pt-8 pb-4">
         <div className="max-w-sm w-full mx-auto">
-          <form className="space-y-6">
+          {error && (
+            <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+          
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Input fields con padding aumentado para touch */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -28,8 +96,11 @@ export default function LoginScreen() {
                 </div>
                 <input
                   type="email"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base text-gray-900"
                   placeholder="correo@ejemplo.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -44,8 +115,11 @@ export default function LoginScreen() {
                 </div>
                 <input
                   type="password"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base text-gray-900"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -68,24 +142,43 @@ export default function LoginScreen() {
                 <input 
                   type="checkbox" 
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <span className="ml-2 text-sm text-gray-600">Recordarme</span>
               </label>
-              <button 
-                type="button"
+              <Link 
+                href="/auth/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-500"
               >
                 ¿Olvidó su contraseña?
-              </button>
+              </Link>
+            </div>
+            
+            {/* Credentials for testing */}
+            <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+              <p><strong>Usuario de prueba:</strong> demo@example.com</p>
+              <p><strong>Contraseña:</strong> demo123</p>
             </div>
             
             {/* Login button con altura aumentada para touch */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-4 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-base font-medium"
+              className="w-full bg-blue-600 text-white py-4 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-base font-medium disabled:bg-blue-400"
+              disabled={isLoading}
             >
-              Ingresar
+              {isLoading ? 'Iniciando sesión...' : 'Ingresar'}
             </button>
+            
+            {/* Register link for mobile */}
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                ¿No tiene una cuenta?{' '}
+                <Link href="/auth/register" className="text-blue-600 font-medium">
+                  Registrarse
+                </Link>
+              </p>
+            </div>
           </form>
 
           {/* Version info */}

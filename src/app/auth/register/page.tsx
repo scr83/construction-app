@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [role, setRole] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,16 +25,22 @@ export default function RegisterPage() {
     
     setIsLoading(true);
     
-    // Para la versión de prueba, simplemente simularemos el registro
     try {
-      // Aquí iría la lógica real de registro
+      // Simulamos registro exitoso para demo
       console.log('Registro simulado:', { email, password, name, role });
+      
+      // Guardar información de usuario en localStorage
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userName', name);
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('userPassword', password); // Solo para demo, nunca hacer esto en producción
       
       // Simulamos un delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Redirigir a login
-      window.location.href = '/auth/login';
+      // Mostrar pantalla de éxito
+      setSuccess(true);
+      
     } catch (err) {
       setError('Error al registrar usuario');
       console.error(err);
@@ -41,6 +48,56 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
+
+  // Si el registro fue exitoso, mostrar mensaje de verificación
+  if (success) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex-1 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-md bg-white p-8 rounded-lg shadow">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">¡Registro exitoso!</h2>
+              <p className="mt-2 text-gray-600">Tu cuenta ha sido creada correctamente.</p>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-700 text-center">
+                En una aplicación real, enviaríamos un correo de verificación a <strong>{email}</strong>.
+              </p>
+              
+              <div className="mt-6">
+                <button 
+                  onClick={() => {
+                    // Para demo, iniciamos sesión inmediatamente
+                    localStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = '/dashboard';
+                  }}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Ir al Dashboard (Demo)
+                </button>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <Link href="/auth/login" className="text-sm text-blue-600 hover:text-blue-500">
+                  Ir a la página de inicio de sesión
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <footer className="py-4 text-center text-sm text-gray-500">
+          <p>Versión 1.0.0</p>
+        </footer>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -79,7 +136,7 @@ export default function RegisterPage() {
                     type="text"
                     autoComplete="name"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -97,7 +154,7 @@ export default function RegisterPage() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -113,7 +170,7 @@ export default function RegisterPage() {
                     id="role"
                     name="role"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                   >
@@ -135,7 +192,7 @@ export default function RegisterPage() {
                     type="password"
                     autoComplete="new-password"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -152,7 +209,7 @@ export default function RegisterPage() {
                     name="confirmPassword"
                     type="password"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
