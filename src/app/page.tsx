@@ -6,7 +6,6 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
-      // Modificar la sección del header en page.tsx para incluir botones en versión móvil
 <header className="py-6 px-4 border-b border-border">
   <div className="container mx-auto flex justify-between items-center">
     <div className="flex items-center gap-3">
