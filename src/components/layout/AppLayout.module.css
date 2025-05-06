@@ -1,0 +1,152 @@
+.layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--color-background);
+  }
+  
+  /* Sidebar */
+  .sidebarContainer {
+    height: 100%;
+    position: relative;
+  }
+  
+  /* Main Content */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  /* Header */
+  .header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-lg);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .menuButton {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    margin-right: var(--spacing-md);
+  }
+  
+  .title {
+    flex: 1;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+  
+  .actions {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+  
+  .actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-background);
+    color: var(--color-text-secondary);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .actionButton:hover {
+    background-color: var(--color-hover-bg);
+  }
+  
+  /* Content */
+  .content {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+  }
+  
+  /* Mobile Menu Overlay */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 30;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .overlayVisible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 1024px) {
+    .menuButton {
+      display: block;
+    }
+    
+    .sidebarContainer {
+      position: fixed;
+      z-index: 40;
+      height: 100%;
+    }
+    
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebarMobileOpen .sidebar {
+      transform: translateX(0);
+    }
+    
+    .overlay {
+      display: block;
+    }
+    
+    .main {
+      width: 100%;
+    }
+  }
+  
+  /* Para dispositivos móviles, aumentar el contraste y la usabilidad */
+  @media (max-width: 768px) {
+    .header {
+      height: 60px;
+      padding: 0 var(--spacing-md);
+    }
+    
+    .title {
+      font-size: 1.125rem;
+    }
+    
+    .actionButton {
+      width: 44px;
+      height: 44px;
+    }
+    
+    .content {
+      padding: var(--spacing-md);
+    }
+  }
