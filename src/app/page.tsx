@@ -6,34 +6,51 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Header */}
-      <header className="py-6 px-4 border-b border-border">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <Image 
-              src="/construction-icon.svg" 
-              alt="ConstructionApp Logo" 
-              width={36} 
-              height={36}
-              priority
-            />
-            <h1 className="text-xl font-bold text-text-primary">ConstructionApp</h1>
-          </div>
-          <div className="hidden md:flex items-center gap-4">
-            <Link 
-              href="/auth/login" 
-              className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-            >
-              Iniciar sesión
-            </Link>
-            <Link 
-              href="/auth/register" 
-              className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
-            >
-              Registrarse
-            </Link>
-          </div>
-        </div>
-      </header>
+      // Modificar la sección del header en page.tsx para incluir botones en versión móvil
+<header className="py-6 px-4 border-b border-border">
+  <div className="container mx-auto flex justify-between items-center">
+    <div className="flex items-center gap-3">
+      <Image 
+        src="/construction-icon.svg" 
+        alt="ConstructionApp Logo" 
+        width={36} 
+        height={36}
+        priority
+      />
+      <h1 className="text-xl font-bold text-text-primary">ConstructionApp</h1>
+    </div>
+    <div className="hidden md:flex items-center gap-4">
+      <Link 
+        href="/auth/login" 
+        className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+      >
+        Iniciar sesión
+      </Link>
+      <Link 
+        href="/auth/register" 
+        className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+      >
+        Registrarse
+      </Link>
+    </div>
+  </div>
+  
+  {/* Añadir botones móviles */}
+  <div className="mt-4 flex md:hidden items-center gap-4 justify-center">
+    <Link 
+      href="/auth/login" 
+      className="flex-1 text-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white"
+    >
+      Iniciar sesión
+    </Link>
+    <Link 
+      href="/auth/register" 
+      className="flex-1 text-center py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-blue-600"
+    >
+      Registrarse
+    </Link>
+  </div>
+</header>
       
       {/* Hero Section */}
       <section className="py-12 md:py-24 px-4">
