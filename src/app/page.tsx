@@ -1,80 +1,154 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React from 'react';
+import { Building2, ArrowRight, User, Files, Settings, Bell, Camera } from 'lucide-react';
 
-export default function Home() {
-  const router = useRouter();
+// Define button components based on the design system
+const PrimaryButton = ({ children, className = "", ...props }) => (
+  <button
+    className={`bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:bg-blue-300 disabled:shadow-none disabled:transform-none ${className}`}
+    {...props}
+  >
+    {children}
+  </button>
+);
 
-  const handleLogin = () => {
-    router.push('/auth/login');
-  };
+const SecondaryButton = ({ children, className = "", ...props }) => (
+  <button
+    className={`bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-900 font-medium border border-gray-200 px-4 py-3 rounded-xl shadow-sm hover:shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:text-gray-400 disabled:bg-gray-50 disabled:shadow-none disabled:transform-none ${className}`}
+    {...props}
+  >
+    {children}
+  </button>
+);
 
-  const handleRegister = () => {
-    router.push('/auth/register');
-  };
+// Cards with different visual treatments
+const FeatureCard = ({ icon: Icon, title, description }) => (
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
+    <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+      <Icon className="h-6 w-6 text-blue-600" />
+    </div>
+    <h3 className="font-bold text-lg mb-2">{title}</h3>
+    <p className="text-gray-600">{description}</p>
+  </div>
+);
 
-  const handleGetStarted = () => {
-    router.push('/auth/login');
-  };
+const NavLink = ({ icon: Icon, label, active }) => (
+  <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700'}`}>
+    <Icon className="h-5 w-5" />
+    <span className="font-medium">{label}</span>
+    {active && <div className="ml-auto"><ArrowRight className="h-4 w-4" /></div>}
+  </div>
+);
 
-  const handleViewFeatures = () => {
-    router.push('#features');
-  };
-
+const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="flex items-center p-4 border-b border-gray-800">
-        <div className="w-12 h-12 bg-gray-800 rounded-md flex items-center justify-center mr-4">
-          <span className="text-blue-500 text-2xl font-bold">?</span>
-        </div>
-        <h1 className="text-2xl font-bold">ConstructionApp</h1>
-      </div>
-
-      {/* Hero Section */}
-      <div className="flex flex-col items-center justify-center p-6 border-b border-gray-800">
-        <div className="w-full max-w-2xl mb-8">
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <button
-              onClick={handleLogin}
-              className="w-full py-4 bg-white text-black rounded-md hover:bg-gray-200 font-medium"
-            >
-              Iniciar sesión
-            </button>
-            <button
-              onClick={handleRegister}
-              className="w-full py-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
-            >
-              Registrarse
-            </button>
+      <header className="bg-white border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="bg-blue-100 p-2 rounded-lg">
+              <Building2 className="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="font-bold text-xl">ConstructionApp</h1>
+              <p className="text-sm text-gray-500">v1.0.0</p>
+            </div>
+          </div>
+          <div className="flex space-x-2">
+            <SecondaryButton>Register</SecondaryButton>
+            <PrimaryButton>Login</PrimaryButton>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="max-w-2xl mx-auto px-6 py-16 text-center">
-        <h2 className="text-5xl font-bold mb-8">Control de obras en tiempo real</h2>
-        
-        <p className="text-xl mb-12">
-          Gestiona tus proyectos de construcción de manera eficiente, monitoreando avances y optimizando recursos directamente desde tu dispositivo.
-        </p>
-        
-        <div className="flex flex-col gap-4 mb-8">
-          <button
-            onClick={handleGetStarted}
-            className="w-full py-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
-          >
-            Comenzar ahora
-          </button>
-          
-          <button
-            onClick={handleViewFeatures}
-            className="w-full py-4 bg-white text-black rounded-md hover:bg-gray-200 font-medium"
-          >
-            Ver características
+      <main className="max-w-6xl mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="bg-blue-100 w-20 h-20 rounded-xl flex items-center justify-center mx-auto mb-6">
+            <Building2 className="h-10 w-10 text-blue-600" />
+          </div>
+          <h1 className="text-4xl font-bold mb-4">ConstructionApp</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">Control de obras en tiempo real para equipos de construcción</p>
+          <div className="flex items-center justify-center space-x-4">
+            <PrimaryButton className="px-6">Comenzar Ahora</PrimaryButton>
+            <SecondaryButton className="px-6">Ver Demo</SecondaryButton>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="mb-16">
+          <h2 className="text-2xl font-bold mb-8 text-center">Funcionalidades Principales</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <FeatureCard 
+              icon={Files} 
+              title="Gestión de Proyectos" 
+              description="Administre todos sus proyectos de construcción en un solo lugar." 
+            />
+            <FeatureCard 
+              icon={User} 
+              title="Control de Personal" 
+              description="Asigne tareas y haga seguimiento del rendimiento del equipo." 
+            />
+            <FeatureCard 
+              icon={Camera} 
+              title="Documentación Visual" 
+              description="Capture fotos y documente el progreso en tiempo real." 
+            />
+          </div>
+        </div>
+
+        {/* App Navigation Demo */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow mb-16">
+          <h2 className="text-2xl font-bold mb-6">Navegación de la App</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Accesos Directos</h3>
+              </div>
+              <div className="space-y-2">
+                <NavLink icon={Building2} label="Dashboard (Gerencia)" active />
+                <NavLink icon={Files} label="Dashboard (Operativo)" />
+                <NavLink icon={User} label="Proyectos" />
+                <NavLink icon={Bell} label="Notificaciones" />
+                <NavLink icon={Settings} label="Configuración" />
+              </div>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="text-sm text-gray-500 mb-2">Vista Previa</div>
+              <div className="aspect-[9/16] bg-white rounded-lg border border-gray-200 flex items-center justify-center">
+                <p className="text-gray-400">Vista de la aplicación</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="bg-blue-600 rounded-xl p-8 text-center text-white shadow-lg">
+          <h2 className="text-2xl font-bold mb-4">¿Listo para optimizar su operación?</h2>
+          <p className="mb-6 max-w-2xl mx-auto">Únase a las empresas líderes que ya están utilizando ConstructionApp para mejorar su eficiencia.</p>
+          <button className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl hover:shadow-lg transition">
+            Comenzar Prueba Gratuita
           </button>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t mt-16 py-12">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center justify-center mb-8">
+            <div className="bg-blue-100 p-2 rounded-lg mr-3">
+              <Building2 className="h-6 w-6 text-blue-600" />
+            </div>
+            <h2 className="font-bold text-xl">ConstructionApp</h2>
+          </div>
+          <div className="text-center text-gray-500 text-sm">
+            © 2025 ConstructionApp. Todos los derechos reservados.
+          </div>
+        </div>
+      </footer>
     </div>
   );
-}
+};
+
+export default LandingPage;
