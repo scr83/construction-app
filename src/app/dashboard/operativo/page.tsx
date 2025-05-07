@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function OperativoDashboard() {
   const router = useRouter();
@@ -9,6 +10,8 @@ export default function OperativoDashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [syncPending, setSyncPending] = useState(2);
+  const [activeTab, setActiveTab] = useState('inicio');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Verificar autenticación
@@ -17,8 +20,16 @@ export default function OperativoDashboard() {
       const userRole = localStorage.getItem('userRole');
       const name = localStorage.getItem('userName') || 'Usuario';
       
-      if (!isLoggedIn || userRole !== 'operativo') {
+      if (!isLoggedIn) {
+        console.log('No autenticado, redirigiendo al login');
         router.push('/auth/login');
+        return;
+      }
+      
+      // Si es usuario de gerencia, redirigir
+      if (userRole === 'gerencia') {
+        console.log('Usuario gerencia, redirigiendo al dashboard de gerencia');
+        router.push('/dashboard/gerencia');
         return;
       }
       
@@ -28,12 +39,37 @@ export default function OperativoDashboard() {
       const storedTasks = localStorage.getItem('userTasks');
       if (storedTasks) {
         setTasks(JSON.parse(storedTasks));
+      } else {
+        // Tareas por defecto si no hay almacenadas
+        const defaultTasks = [
+          {
+            id: 1,
+            title: 'Hormigonado Muros',
+            location: 'Piso 12 - Depto 1201',
+            status: 'urgent',
+            deadline: '2h',
+            action: 'register'
+          },
+          {
+            id: 2,
+            title: 'Revisión Instalaciones',
+            location: 'Piso 11 - Depto 1102',
+            status: 'pending',
+            time: '14:30',
+            action: 'view'
+          }
+        ];
+        localStorage.setItem('userTasks', JSON.stringify(defaultTasks));
+        setTasks(defaultTasks);
       }
       
       setLoading(false);
     } catch (error) {
       console.error('Error accediendo a localStorage:', error);
-      router.push('/auth/login');
+      setError('Error al cargar datos. Redirigiendo al login...');
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 2000);
     }
   }, [router]);
 
@@ -45,33 +81,85 @@ export default function OperativoDashboard() {
       router.push('/auth/login');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
+      setError('Error al cerrar sesión. Intenta nuevamente.');
     }
   };
 
   const handleTaskAction = (taskId, action) => {
     if (action === 'register') {
-      // Simulación de registro
-      router.push(`/dashboard/task/${taskId}/register`);
+      // Simulación de registro de tarea
+      alert('Esta funcionalidad estaría conectada al registro de la tarea ' + taskId);
+      
+      // Marcar como completada para demostración
+      const updatedTasks = tasks.map(task => 
+        task.id === taskId 
+          ? {...task, status: 'completed', action: 'view'} 
+          : task
+      );
+      setTasks(updatedTasks);
+      localStorage.setItem('userTasks', JSON.stringify(updatedTasks));
+      
+      // En una implementación real redirigir a:
+      // router.push(`/dashboard/task/${taskId}/register`);
     } else {
       // Ver detalles
-      router.push(`/dashboard/task/${taskId}/details`);
+      alert('Aquí se mostrarían los detalles de la tarea ' + taskId);
+      // En una implementación real redirigir a:
+      // router.push(`/dashboard/task/${taskId}/details`);
     }
   };
 
   const handleNewRegistration = () => {
-    router.push('/dashboard/new-registration');
+    alert('Funcionalidad de nuevo registro que se conectaría con un formulario');
+    // En una implementación real redirigir a:
+    // router.push('/dashboard/new-registration');
   };
 
   const handleTakePhoto = () => {
     // Simulación de apertura de cámara
-    alert('Función de cámara abierta');
+    alert('Esta función abriría la cámara del dispositivo');
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    
+    // Simulación de navegación entre pestañas
+    if (tab === 'inicio') {
+      // Ya estamos en inicio, no hacer nada
+    } else if (tab === 'registros') {
+      alert('Esta acción cargaría la vista de registros');
+    } else if (tab === 'fotos') {
+      alert('Esta acción cargaría la galería de fotos');
+    }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-lg font-medium">Cargando...</p>
+          <svg className="animate-spin h-10 w-10 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-lg font-medium text-gray-900">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center">
+          <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4">
+            <p>{error}</p>
+          </div>
+          <button 
+            onClick={() => router.push('/auth/login')}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700"
+          >
+            Ir al inicio de sesión
+          </button>
         </div>
       </div>
     );
@@ -120,7 +208,7 @@ export default function OperativoDashboard() {
           <div className="flex mb-6 gap-3">
             <button
               onClick={handleNewRegistration}
-              className="flex-1 bg-blue-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+              className="flex-1 bg-blue-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center shadow-sm hover:shadow-md active:shadow-inner hover:bg-blue-700 active:bg-blue-800"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -130,7 +218,7 @@ export default function OperativoDashboard() {
             
             <button
               onClick={handleTakePhoto}
-              className="flex-1 bg-gray-100 text-gray-800 font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+              className="flex-1 bg-white text-gray-800 font-medium py-3 px-4 rounded-lg flex items-center justify-center shadow-sm hover:shadow-md active:shadow-inner border border-gray-200 hover:bg-gray-50 active:bg-gray-100"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -157,17 +245,25 @@ export default function OperativoDashboard() {
               {tasks.map(task => (
                 <div
                   key={task.id}
-                  className={`bg-white rounded-lg shadow p-4 border-l-4 ${
-                    task.status === 'urgent' ? 'border-red-500 bg-red-50' : 'border-gray-200'
+                  className={`rounded-lg shadow p-4 border-l-4 ${
+                    task.status === 'urgent' ? 'border-red-500 bg-red-50' : 
+                    task.status === 'completed' ? 'border-green-500 bg-green-50' :
+                    'border-gray-200 bg-white'
                   }`}
                 >
                   <div className="flex items-start">
                     <div className={`flex items-center justify-center p-2 rounded-full ${
-                      task.status === 'urgent' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
+                      task.status === 'urgent' ? 'bg-red-100 text-red-600' : 
+                      task.status === 'completed' ? 'bg-green-100 text-green-600' :
+                      'bg-blue-100 text-blue-600'
                     }`}>
                       {task.status === 'urgent' ? (
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      ) : task.status === 'completed' ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -185,21 +281,32 @@ export default function OperativoDashboard() {
                               <span className="ml-1 font-bold">{task.deadline} restantes</span>
                             )}
                           </span>
+                        ) : task.status === 'completed' ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                            Completado
+                          </span>
                         ) : (
                           <span className="text-sm text-gray-500 font-medium">{task.time}</span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 mt-1">{task.location}</p>
+                      <p className="text-sm text-gray-700 mt-1">{task.location}</p>
                       <div className="mt-3">
                         <button
                           onClick={() => handleTaskAction(task.id, task.action)}
-                          className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${
+                          className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md shadow-sm ${
+                            task.status === 'completed' 
+                              ? 'bg-green-600 text-white hover:bg-green-700' :
                             task.action === 'register'
-                              ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                              : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                              ? 'bg-red-600 text-white hover:bg-red-700'
+                              : 'bg-blue-600 text-white hover:bg-blue-700'
                           }`}
                         >
-                          {task.action === 'register' ? 'Registrar Ahora' : 'Ver Detalles'}
+                          {task.status === 'completed' 
+                            ? 'Ver Registro' : 
+                          task.action === 'register' 
+                            ? 'Registrar Ahora' 
+                            : 'Ver Detalles'
+                          }
                         </button>
                       </div>
                     </div>
@@ -219,7 +326,7 @@ export default function OperativoDashboard() {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Últimos Registros</h2>
-              <button className="text-blue-600 text-sm font-medium">Ver todos</button>
+              <button className="text-blue-600 text-sm font-medium hover:text-blue-800">Ver todos</button>
             </div>
             
             {/* Pending Sync Notice */}
@@ -228,7 +335,7 @@ export default function OperativoDashboard() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm">{syncPending} registros pendientes de sync</span>
+                <span className="text-sm font-medium">{syncPending} registros pendientes de sync</span>
               </div>
             )}
             
@@ -247,7 +354,7 @@ export default function OperativoDashboard() {
                       Aprobado
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">Piso 12 - Depto 1205</p>
+                  <p className="text-sm text-gray-700">Piso 12 - Depto 1205</p>
                 </div>
               </div>
             </div>
@@ -256,28 +363,37 @@ export default function OperativoDashboard() {
       </main>
       
       {/* Footer Navigation */}
-      <footer className="fixed bottom-0 w-full bg-white border-t border-gray-200">
+      <footer className="fixed bottom-0 w-full bg-white border-t border-gray-200 shadow-lg">
         <div className="flex justify-around items-center h-16">
-          <button className="flex flex-col items-center justify-center text-blue-600">
+          <button 
+            className={`flex flex-col items-center justify-center ${activeTab === 'inicio' ? 'text-blue-600' : 'text-gray-500'}`}
+            onClick={() => handleTabChange('inicio')}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            <span className="text-xs mt-1">Inicio</span>
+            <span className="text-xs mt-1 font-medium">Inicio</span>
           </button>
           
-          <button className="flex flex-col items-center justify-center text-gray-500">
+          <button 
+            className={`flex flex-col items-center justify-center ${activeTab === 'registros' ? 'text-blue-600' : 'text-gray-500'}`}
+            onClick={() => handleTabChange('registros')}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span className="text-xs mt-1">Registros</span>
+            <span className="text-xs mt-1 font-medium">Registros</span>
           </button>
           
-          <button className="flex flex-col items-center justify-center text-gray-500">
+          <button 
+            className={`flex flex-col items-center justify-center ${activeTab === 'fotos' ? 'text-blue-600' : 'text-gray-500'}`}
+            onClick={() => handleTabChange('fotos')}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="text-xs mt-1">Fotos</span>
+            <span className="text-xs mt-1 font-medium">Fotos</span>
           </button>
         </div>
       </footer>

@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    // Simulando validación
+    // Validación básica
     if (!email || !password) {
       setError('Por favor ingresa email y contraseña');
       setLoading(false);
@@ -74,71 +75,101 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-6 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900">
             Iniciar Sesión
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600">
             Aplicación de Gestión de Construcción
           </p>
         </div>
-        
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4">
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        )}
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Contraseña</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Contraseña"
-              />
-            </div>
-          </div>
+      </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              {loading ? 'Iniciando...' : 'Iniciar Sesión'}
-            </button>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+          {error && (
+            <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+          
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Ingresa tu email"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Contraseña
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Ingresa tu contraseña"
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-primary w-full py-2.5 px-4 text-sm shadow-sm hover:shadow-md active:shadow-inner"
+              >
+                {loading ? 'Iniciando...' : 'Iniciar Sesión'}
+              </button>
+            </div>
+          </form>
+          
+          <div className="mt-6 bg-gray-50 p-4 rounded-md">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Usuarios de prueba:</h3>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-2 bg-blue-50 rounded border border-blue-100">
+                <p className="font-medium text-blue-800">Gerencia:</p>
+                <p className="text-gray-600">demo@example.com</p>
+                <p className="text-gray-600">demo123</p>
+              </div>
+              <div className="p-2 bg-green-50 rounded border border-green-100">
+                <p className="font-medium text-green-800">Operativo:</p>
+                <p className="text-gray-600">operativo@example.com</p>
+                <p className="text-gray-600">demo123</p>
+              </div>
+            </div>
           </div>
           
-          <div className="text-center text-xs text-gray-500">
-            <p>Usuarios de prueba:</p>
-            <p>demo@example.com / demo123 (Gerencia)</p>
-            <p>operativo@example.com / demo123 (Operativo)</p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              ¿No tienes una cuenta?{' '}
+              <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+                Regístrate aquí
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
