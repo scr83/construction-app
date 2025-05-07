@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Building2, ArrowRight, User, Files, Settings, Bell, Camera } from 'lucide-react';
 
@@ -95,31 +96,6 @@ const LandingPage = () => {
               title="Documentación Visual" 
               description="Capture fotos y documente el progreso en tiempo real." 
             />
-          </div>
-        </div>
-
-        {/* App Navigation Demo */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow mb-16">
-          <h2 className="text-2xl font-bold mb-6">Navegación de la App</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <div className="mb-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Accesos Directos</h3>
-              </div>
-              <div className="space-y-2">
-                <NavLink icon={Building2} label="Dashboard (Gerencia)" active />
-                <NavLink icon={Files} label="Dashboard (Operativo)" />
-                <NavLink icon={User} label="Proyectos" />
-                <NavLink icon={Bell} label="Notificaciones" />
-                <NavLink icon={Settings} label="Configuración" />
-              </div>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <div className="text-sm text-gray-500 mb-2">Vista Previa</div>
-              <div className="aspect-[9/16] bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                <p className="text-gray-400">Vista de la aplicación</p>
-              </div>
-            </div>
           </div>
         </div>
 
