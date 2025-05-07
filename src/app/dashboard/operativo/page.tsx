@@ -1,267 +1,176 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Home, 
-  Files, 
-  Camera,
-  Bell,
-  User,
-  Plus,
-  Clock,
-  Calendar,
-  CheckCircle2,
-  AlertCircle,
-  Building2,
-  Check,
-  Signal,
-} from 'lucide-react';
 
-export default function DashboardOperativo() {
+export default function OperativoDashboard() {
   const router = useRouter();
   const [userName, setUserName] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState('Torre Norte');
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [syncPending, setSyncPending] = useState(2);
 
   useEffect(() => {
-    // Verificar autenticación al cargar la página
-    const checkAuth = () => {
-      try {
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        
-        if (!isLoggedIn) {
-          // No autenticado, redirigir al login
-          router.push('/auth/login');
-          return;
-        }
-        
-        // Verificar si el usuario tiene el rol correcto
-        const userRole = localStorage.getItem('userRole');
-        if (userRole !== 'operativo') {
-          // Si no es operativo, redirigir al dashboard principal para que lo redirija correctamente
-          router.push('/dashboard');
-          return;
-        }
-        
-        // Si todo está bien, mostrar el dashboard
-        setUserName(localStorage.getItem('userName') || 'Usuario Operativo');
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error accediendo a localStorage:', error);
+    // Verificar autenticación
+    try {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const userRole = localStorage.getItem('userRole');
+      const name = localStorage.getItem('userName') || 'Usuario';
+      
+      if (!isLoggedIn || userRole !== 'operativo') {
         router.push('/auth/login');
+        return;
       }
-    };
-    
-    checkAuth();
+      
+      setUserName(name);
+      
+      // Cargar tareas
+      const storedTasks = localStorage.getItem('userTasks');
+      if (storedTasks) {
+        setTasks(JSON.parse(storedTasks));
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error('Error accediendo a localStorage:', error);
+      router.push('/auth/login');
+    }
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userRole');
-    router.push('/auth/login');
+    try {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userName');
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   };
 
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+  const handleTaskAction = (taskId, action) => {
+    if (action === 'register') {
+      // Simulación de registro
+      router.push(`/dashboard/task/${taskId}/register`);
+    } else {
+      // Ver detalles
+      router.push(`/dashboard/task/${taskId}/details`);
+    }
+  };
+
+  const handleNewRegistration = () => {
+    router.push('/dashboard/new-registration');
+  };
+
+  const handleTakePhoto = () => {
+    // Simulación de apertura de cámara
+    alert('Función de cámara abierta');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg font-medium">Cargando...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-16">
-      {/* Top Header - Fixed */}
-      <div className="fixed top-0 left-0 right-0 bg-white border-b z-20">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
         <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-lg font-bold">Jefe de Terreno</h1>
-              <div className="flex items-center">
-                <p className="text-sm text-gray-500">Torre Norte</p>
-                <span className="mx-2 text-gray-300">•</span>
-                <span className="flex items-center text-xs text-green-600">
-                  <Signal className="h-3 w-3 mr-1" />
-                  Online
-                </span>
-              </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold text-gray-900">Jefe de Terreno</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-gray-700">{location}</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                <span className="h-2 w-2 mr-1 rounded-full bg-green-500"></span>
+                Online
+              </span>
             </div>
-            <div className="flex items-center space-x-3">
-              <button className="p-2 hover:bg-gray-100 rounded-full relative">
-                <Bell className="h-6 w-6 text-gray-600" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          </div>
+          <div className="flex justify-between mt-2">
+            <div className="relative">
+              <button className="relative p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9" />
+                </svg>
+                <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500"></span>
               </button>
-              <div className="relative group">
-                <button className="p-2 hover:bg-gray-100 rounded-full">
-                  <User className="h-6 w-6 text-gray-600" />
-                </button>
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover:block">
-                  <div className="px-4 py-2 text-sm text-gray-700">
-                    <p className="font-medium">{userName}</p>
-                    <p className="text-gray-500">Rol: Operativo</p>
-                  </div>
-                  <hr />
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Cerrar sesión
-                  </button>
-                </div>
-              </div>
+            </div>
+            <div>
+              <button onClick={handleLogout} className="p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Main Content - With top padding for header */}
-      <div className="pt-20 px-4">
-        {/* Quick Actions Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <button className="bg-blue-600 text-white p-4 rounded-xl flex items-center justify-center space-x-2">
-            <Plus className="h-5 w-5" />
-            <span>Nuevo Registro</span>
-          </button>
-          <button className="bg-white border p-4 rounded-xl flex items-center justify-center space-x-2">
-            <Camera className="h-5 w-5 text-gray-600" />
-            <span>Tomar Foto</span>
-          </button>
-        </div>
-
-        {/* Tareas del Día */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Tareas del Día</h2>
-            <div className="flex items-center text-sm text-gray-500">
-              <Calendar className="h-4 w-4 mr-1" />
-              <span>13 Enero</span>
-            </div>
+      {/* Main Content */}
+      <main className="pb-20">
+        <div className="px-4 py-4">
+          
+          {/* Action Buttons */}
+          <div className="flex mb-6 gap-3">
+            <button
+              onClick={handleNewRegistration}
+              className="flex-1 bg-blue-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Nuevo Registro
+            </button>
+            
+            <button
+              onClick={handleTakePhoto}
+              className="flex-1 bg-gray-100 text-gray-800 font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Tomar Foto
+            </button>
           </div>
-
-          <div className="space-y-4">
-            {/* Tarea Urgente */}
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3">
-                  <div className="bg-red-100 p-2 rounded-lg mt-1">
-                    <AlertCircle className="h-5 w-5 text-red-600" />
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <h3 className="font-medium">Hormigonado Muros</h3>
-                      <span className="px-2 py-0.5 bg-red-100 text-red-800 text-xs rounded-full">Urgente</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Piso 12 - Depto 1201</p>
-                    <button className="mt-2 text-sm font-medium text-red-700">
-                      Registrar Ahora
-                    </button>
-                  </div>
-                </div>
-                <span className="text-sm text-red-600">2h restantes</span>
+          
+          {/* Tasks Section */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Tareas del Día</h2>
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-gray-600 font-medium text-sm">13 Enero</span>
               </div>
             </div>
-
-            {/* Tarea Normal */}
-            <div className="bg-white border rounded-xl p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3">
-                  <div className="bg-blue-100 p-2 rounded-lg mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Revisión Instalaciones</h3>
-                    <p className="text-sm text-gray-600 mt-1">Piso 11 - Depto 1102</p>
-                    <button className="mt-2 text-sm font-medium text-blue-600">
-                      Ver Detalles
-                    </button>
-                  </div>
-                </div>
-                <span className="text-sm text-gray-500">14:30</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Últimos Registros */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Últimos Registros</h2>
-            <button className="text-sm text-blue-600">Ver todos</button>
-          </div>
-
-          <div className="space-y-4">
-            {/* Registro con Fotos */}
-            <div className="bg-white border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="font-medium">Terminaciones Piso 12</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">Completado</p>
-                </div>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  <Check className="h-3 w-3 mr-1" />
-                  QC Aprobado
-                </span>
-              </div>
-              
-              {/* Preview de Fotos */}
-              <div className="flex space-x-2 mb-3">
-                <div className="w-16 h-16 bg-gray-100 rounded-lg"></div>
-                <div className="w-16 h-16 bg-gray-100 rounded-lg"></div>
-                <div className="w-16 h-16 bg-gray-100 rounded-lg relative">
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center text-white text-sm">
-                    +3
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">Hace 1 hora</span>
-                <button className="text-blue-600 font-medium">Ver Registro</button>
-              </div>
-            </div>
-
-            {/* Registro Simple */}
-            <div className="bg-white border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="font-medium">Instalación Ventanas</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">En revisión</p>
-                </div>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Pendiente QC
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">Hace 3 horas</span>
-                <button className="text-blue-600 font-medium">Ver Registro</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Navigation - Fixed */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t">
-        <div className="flex justify-around">
-          <button className="flex-1 flex flex-col items-center py-3 px-5 text-blue-600">
-            <Home className="h-6 w-6" />
-            <span className="text-xs mt-1">Inicio</span>
-          </button>
-          <button className="flex-1 flex flex-col items-center py-3 px-5 text-gray-500">
-            <Files className="h-6 w-6" />
-            <span className="text-xs mt-1">Registros</span>
-          </button>
-          <button className="flex-1 flex flex-col items-center py-3 px-5 text-gray-500">
-            <Camera className="h-6 w-6" />
-            <span className="text-xs mt-1">Fotos</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Sync Status - Fixed */}
-      <div className="fixed bottom-20 right-4">
-        <div className="bg-yellow-50 shadow-lg border border-yellow-200 rounded-xl p-3 flex items-center space-x-2">
-          <Clock className="h-4 w-4 text-yellow-500" />
-          <span className="text-sm text-yellow-700">2 registros pendientes de sync</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+            
+            {/* Task List */}
+            <div className="space-y-4">
+              {tasks.map(task => (
+                <div
+                  key={task.id}
+                  className={`bg-white rounded-lg shadow p-4 border-l-4 ${
+                    task.status === 'urgent' ? 'border-red-500 bg-red-50' : 'border-gray-200'
+                  }`}
+                >
+                  <div className="flex items-start">
+                    <div className={`flex items-center justify-center p-2 rounded-full ${
+                      task.status === 'urgent' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
+                    }`}>
+                      {task.status === 'urgent' ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      )}

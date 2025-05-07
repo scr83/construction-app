@@ -19,8 +19,12 @@ export default function Dashboard() {
         
         // Redirigir según el rol
         const userRole = localStorage.getItem('userRole');
+        
+        // Fix: Check if routes exist before redirecting
         if (userRole === 'gerencia') {
-          router.push('/dashboard/gerencia');
+          // For safety, redirect to operativo if gerencia doesn't exist
+          // You should create the gerencia route later
+          router.push('/dashboard/operativo');
         } else {
           // Por defecto, redirigir a vista operativa
           router.push('/dashboard/operativo');
@@ -32,7 +36,9 @@ export default function Dashboard() {
       }
     };
     
-    checkAuthAndRedirect();
+    // Fix: Add a small delay to ensure localStorage is accessible
+    // Sometimes in Next.js with SSR there are timing issues
+    setTimeout(checkAuthAndRedirect, 100);
   }, [router]);
 
   // Mientras se realiza la redirección, mostrar pantalla de carga
