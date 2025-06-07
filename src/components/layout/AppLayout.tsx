@@ -115,7 +115,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     },
     {
       label: 'Unidades',
-      href: '/units',
+      href: '/construction-units',
       icon: <UnitsIcon />,
     },
     {
@@ -137,11 +137,23 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       label: 'Reportes',
       href: '/reports',
       icon: <ReportsIcon />,
-    },
-    {
-      label: 'KPI',
-      href: '/kpi',
-      icon: <KpiIcon />,
+      children: [
+        {
+          label: 'Generador',
+          href: '/reports/generator',
+          icon: <span>G</span>,
+        },
+        {
+          label: 'Progreso',
+          href: '/reports/progress',
+          icon: <span>P</span>,
+        },
+        {
+          label: 'KPI',
+          href: '/reports/kpi',
+          icon: <span>K</span>,
+        },
+      ],
     },
   ];
 

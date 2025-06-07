@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Building2, ArrowRight, User, Files, Settings, Bell, Camera } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Define button components based on the design system
 const PrimaryButton = ({ children, className = "", ...props }) => (
@@ -41,6 +42,20 @@ const NavLink = ({ icon: Icon, label, active }) => (
 );
 
 const LandingPage = () => {
+  const router = useRouter();
+
+  const handleLogin = () => {
+    router.push('/auth/login');
+  };
+
+  const handleRegister = () => {
+    router.push('/auth/register');
+  };
+
+  const handleDemo = () => {
+    router.push('/auth/login');
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
@@ -56,8 +71,8 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="flex space-x-2">
-            <SecondaryButton>Register</SecondaryButton>
-            <PrimaryButton>Login</PrimaryButton>
+            <SecondaryButton onClick={handleRegister}>Register</SecondaryButton>
+            <PrimaryButton onClick={handleLogin}>Login</PrimaryButton>
           </div>
         </div>
       </header>
@@ -72,8 +87,8 @@ const LandingPage = () => {
           <h1 className="text-4xl font-bold mb-4">ConstructionApp</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">Control de obras en tiempo real para equipos de construcción</p>
           <div className="flex items-center justify-center space-x-4">
-            <PrimaryButton className="px-6">Comenzar Ahora</PrimaryButton>
-            <SecondaryButton className="px-6">Ver Demo</SecondaryButton>
+            <PrimaryButton onClick={handleRegister} className="px-6">Comenzar Ahora</PrimaryButton>
+            <SecondaryButton onClick={handleDemo} className="px-6">Ver Demo</SecondaryButton>
           </div>
         </div>
 
@@ -103,7 +118,10 @@ const LandingPage = () => {
         <div className="bg-blue-600 rounded-xl p-8 text-center text-white shadow-lg">
           <h2 className="text-2xl font-bold mb-4">¿Listo para optimizar su operación?</h2>
           <p className="mb-6 max-w-2xl mx-auto">Únase a las empresas líderes que ya están utilizando ConstructionApp para mejorar su eficiencia.</p>
-          <button className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl hover:shadow-lg transition">
+          <button 
+            onClick={handleRegister}
+            className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl hover:shadow-lg transition"
+          >
             Comenzar Prueba Gratuita
           </button>
         </div>
