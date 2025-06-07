@@ -1,29 +1,52 @@
 'use client';
 import React from 'react';
-import { Building2, ArrowRight, User, Files, Settings, Bell, Camera } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Building2, ArrowRight, User, Files, Settings, Bell, Camera, LucideIcon } from 'lucide-react';
+import Link from 'next/link';
+
+interface ButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  href?: string;
+  [key: string]: any;
+}
+
+interface FeatureCardProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+interface NavLinkProps {
+  icon: LucideIcon;
+  label: string;
+  active?: boolean;
+}
 
 // Define button components based on the design system
-const PrimaryButton = ({ children, className = "", ...props }) => (
-  <button
-    className={`bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:bg-blue-300 disabled:shadow-none disabled:transform-none ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
+const PrimaryButton = ({ children, className = "", href, ...props }: ButtonProps) => (
+  <Link href={href || '#'}>
+    <button
+      className={`bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:bg-blue-300 disabled:shadow-none disabled:transform-none ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  </Link>
 );
 
-const SecondaryButton = ({ children, className = "", ...props }) => (
-  <button
-    className={`bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-900 font-medium border border-gray-200 px-4 py-3 rounded-xl shadow-sm hover:shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:text-gray-400 disabled:bg-gray-50 disabled:shadow-none disabled:transform-none ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
+const SecondaryButton = ({ children, className = "", href, ...props }: ButtonProps) => (
+  <Link href={href || '#'}>
+    <button
+      className={`bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-900 font-medium border border-gray-200 px-4 py-3 rounded-xl shadow-sm hover:shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:text-gray-400 disabled:bg-gray-50 disabled:shadow-none disabled:transform-none ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  </Link>
 );
 
 // Cards with different visual treatments
-const FeatureCard = ({ icon: Icon, title, description }) => (
+const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => (
   <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
     <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
       <Icon className="h-6 w-6 text-blue-600" />
@@ -33,7 +56,7 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
   </div>
 );
 
-const NavLink = ({ icon: Icon, label, active }) => (
+const NavLink = ({ icon: Icon, label, active }: NavLinkProps) => (
   <div className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer ${active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700'}`}>
     <Icon className="h-5 w-5" />
     <span className="font-medium">{label}</span>
@@ -42,20 +65,6 @@ const NavLink = ({ icon: Icon, label, active }) => (
 );
 
 const LandingPage = () => {
-  const router = useRouter();
-
-  const handleLogin = () => {
-    router.push('/auth/login');
-  };
-
-  const handleRegister = () => {
-    router.push('/auth/register');
-  };
-
-  const handleDemo = () => {
-    router.push('/auth/login');
-  };
-
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
@@ -71,8 +80,8 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="flex space-x-2">
-            <SecondaryButton onClick={handleRegister}>Register</SecondaryButton>
-            <PrimaryButton onClick={handleLogin}>Login</PrimaryButton>
+            <SecondaryButton href="/auth/register">Register</SecondaryButton>
+            <PrimaryButton href="/auth/login">Login</PrimaryButton>
           </div>
         </div>
       </header>
@@ -87,8 +96,8 @@ const LandingPage = () => {
           <h1 className="text-4xl font-bold mb-4">ConstructionApp</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">Control de obras en tiempo real para equipos de construcción</p>
           <div className="flex items-center justify-center space-x-4">
-            <PrimaryButton onClick={handleRegister} className="px-6">Comenzar Ahora</PrimaryButton>
-            <SecondaryButton onClick={handleDemo} className="px-6">Ver Demo</SecondaryButton>
+            <PrimaryButton href="/auth/register" className="px-6">Comenzar Ahora</PrimaryButton>
+            <SecondaryButton href="/auth/login" className="px-6">Ver Demo</SecondaryButton>
           </div>
         </div>
 
@@ -118,12 +127,13 @@ const LandingPage = () => {
         <div className="bg-blue-600 rounded-xl p-8 text-center text-white shadow-lg">
           <h2 className="text-2xl font-bold mb-4">¿Listo para optimizar su operación?</h2>
           <p className="mb-6 max-w-2xl mx-auto">Únase a las empresas líderes que ya están utilizando ConstructionApp para mejorar su eficiencia.</p>
-          <button 
-            onClick={handleRegister}
-            className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl hover:shadow-lg transition"
-          >
-            Comenzar Prueba Gratuita
-          </button>
+          <Link href="/auth/register">
+            <button 
+              className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl hover:shadow-lg transition"
+            >
+              Comenzar Prueba Gratuita
+            </button>
+          </Link>
         </div>
       </main>
 
